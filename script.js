@@ -1,90 +1,106 @@
-const quizData = [
-    {
-        question: "What is the capital of France?",
-        a: "New York",
-        b: "London",
-        c: "Paris",
-        d: "Berlin",
-        correct: "c",
-    },
-    {
-        question: "Who is CEO of Tesla?",
-        a: "Jeff Bezos",
-        b: "Elon Musk",
-        c: "Bill Gates",
-        d: "Tony Stark",
-        correct: "b",
-    },
-    {
-        question: "The iPhone was created by which company?",
-        a: "Apple",
-        b: "Intel",
-        c: "Amazon",
-        d: "Microsoft",
-        correct: "a",
-    },
-    {
-        question: "How many Harry Potter books are there?",
-        a: "1",
-        b: "4",
-        c: "6",
-        d: "7",
-        correct: "d",
-    },
-];
+// Function to generate dummy questions (for illustration purposes)
+function generateQuestions(count) {
+    const generatedQuestions = [];
+    for (let i = 1; i <= count; i++) {
+        generatedQuestions.push({
+            question: `Which answers are correct for question ${i}?`,
+            answers: [
+                { text: 'This is the first of three correct answers.', correct: true },
+                { text: 'This answer is incorrect.', correct: false },
+                { text: 'This is the third of three correct answers', correct: true },
+                { text: 'This is the second of three correct answers.', correct: true }
+            ]
+        });
+    }
+    return generatedQuestions;
+}
 
-const quiz = document.getElementById("quiz");
-const answerEls = document.querySelectorAll(".answer");
-const questionEl = document.getElementById("question");
-const a_text = document.getElementById("a_text");
-const b_text = document.getElementById("b_text");
-const c_text = document.getElementById("c_text");
-const d_text = document.getElementById("d_text");
-const submitBtn = document.getElementById("submit");
+const questions = generateQuestions(200); // Generate 200 questions
 
-let currentQuiz = 0;
+const questionElement = document.getElementById('question');
+const answerButtonsElement = document.getElementById('answer-buttons');
+const nextButton = document.getElementById('next-btn');
+const submitButton = document.getElementById('submit-btn');
+
+let currentQuestionIndex = 0;
 let score = 0;
 
-loadQuiz();
-
-function loadQuiz() {
-    deselectAnswers();
-    const currentQuizData = quizData[currentQuiz];
-    questionEl.innerText = currentQuizData.question;
-    a_text.innerText = currentQuizData.a;
-    b_text.innerText = currentQuizData.b;
-    c_text.innerText = currentQuizData.c;
-    d_text.innerText = currentQuizData.d;
+function startQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    nextButton.classList.add('hide');
+    submitButton.classList.add('hide');
+    showQuestion();
 }
 
-function deselectAnswers() {
-    answerEls.forEach(answerEl => answerEl.checked = false);
-}
+function showQuestion() {
+    resetState();
+    const currentQuestion = questions[currentQuestionIndex];
+    questionElement.innerText = currentQuestion.question;
 
-function getSelected() {
-    let answer;
-    answerEls.forEach(answerEl => {
-        if (answerEl.checked) {
-            answer = answerEl.id;
-        }
+    currentQuestion.answers.forEach(answer => {
+        const button = document.createElement('button');
+        button.innerText = answer.text;
+        button.classList.add('btn');
+        button.addEventListener('click', () => selectAnswer(button, answer));
+        answerButtonsElement.appendChild(button);
     });
-    return answer;
+    submitButton.classList.remove('hide');
 }
 
-submitBtn.addEventListener("click", () => {
-    const answer = getSelected();
-    if (answer) {
-        if (answer === quizData[currentQuiz].correct) {
-            score++;
-        }
-        currentQuiz++;
-        if (currentQuiz < quizData.length) {
-            loadQuiz();
+function resetState() {
+    nextButton.classList.add('hide');
+    submitButton.classList.add('hide');
+    while (answerButtonsElement.firstChild) {
+        answerButtonsElement.removeChild(answerButtonsElement.firstChild);
+    }
+}
+
+function selectAnswer(button, answer) {
+    if (answer.correct) {
+        button.classList.add('correct');
+    } else {
+        button.classList.add('wrong');
+    }
+    button.disabled = true;
+}
+
+function submitAnswers() {
+    Array.from(answerButtonsElement.children).forEach(button => {
+        const correct = questions[currentQuestionIndex].answers.find(answer => answer.text === button.innerText).correct;
+        if (correct) {
+            button.classList.add('correct');
         } else {
-            quiz.innerHTML = `
-                <h2>You answered ${score}/${quizData.length} questions correctly</h2>
-                <button onclick="location.reload()">Reload</button>
-            `;
+            button.classList.add('wrong');
         }
+        button.disabled = true;
+    });
+    nextButton.classList.remove('hide');
+}
+
+function showNextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+        showQuestion();
+    } else {
+        showResults();
+    }
+}
+
+function showResults() {
+    resetState();
+    questionElement.innerText = `You scored ${score} out of ${questions.length}!`;
+    nextButton.innerText = 'Restart';
+    nextButton.classList.remove('hide');
+}
+
+submitButton.addEventListener('click', submitAnswers);
+nextButton.addEventListener('click', () => {
+    if (currentQuestionIndex < questions.length) {
+        showNextQuestion();
+    } else {
+        startQuiz();
     }
 });
+
+startQuiz();
