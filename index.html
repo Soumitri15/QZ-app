@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #6e8efb, #a777e3); /* Adding a gradient background color */
+}
+
+.quiz-container {
+    background-color: #dceb09;
+    border-radius: 10px; /* Increased border radius for a smoother look */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Slightly larger shadow for depth */
+    width: 400px;
+    padding: 30px; /* More padding for better spacing */
+}
+
+.quiz-header {
+    margin-bottom: 20px; /* More space below the header */
+}
+
+.quiz-header h2 {
+    margin: 0;
+    color: #333; /* Darker color for the question text */
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 15px; /* Increased spacing between options */
+}
+
+label {
+    margin-left: 10px;
+    font-size: 18px; /* Larger font for readability */
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 24px; /* Increased padding */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 20px; /* Increased margin for better spacing */
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+    </style>
+</head>
+<body>
+    <div class="quiz-container" id="quiz">
+        <div class="quiz-header">
+            <h2 id="question">Question text</h2>
+            <ul>
+                <li>
+                    <input type="radio" name="answer" id="a" class="answer">
+                    <label for="a" id="a_text">Answer</label>
+                </li>
+                <li>
+                    <input type="radio" name="answer" id="b" class="answer">
+                    <label for="b" id="b_text">Answer</label>
+                </li>
+                <li>
+                    <input type="radio" name="answer" id="c" class="answer">
+                    <label for="c" id="c_text">Answer</label>
+                </li>
+                <li>
+                    <input type="radio" name="answer" id="d" class="answer">
+                    <label for="d" id="d_text">Answer</label>
+                </li>
+            </ul>
+        </div>
+        <button id="submit">Submit</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
