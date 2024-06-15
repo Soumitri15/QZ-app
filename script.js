@@ -1,45 +1,48 @@
 const quizData = [
     {
         question: "Which of the following are programming languages?",
-        a: "HTML",
-        b: "Python",
-        c: "CSS",
-        d: "JavaScript",
+        options: {
+            a: "HTML",
+            b: "Python",
+            c: "CSS",
+            d: "JavaScript"
+        },
         correct: ["b", "d"]
     },
     {
-        question: "Which of the following are input devices?",
-        a: "Mouse",
-        b: "Monitor",
-        c: "Keyboard",
-        d: "Microphone",
-        correct: ["c", "a", "d"]
+        question: "What is the capital of France?",
+        options: {
+            a: "Berlin",
+            b: "Madrid",
+            c: "Paris",
+            d: "Lisbon"
+        },
+        correct: ["c"]
     },
     {
-        question: "Which country has two names in the World?",
-        a: "England",
-        b: "America",
-        c: "China",
-        d: "india",
-        correct: ["d"]
+        question: "Who is the CEO of Tesla?",
+        options: {
+            a: "Bill Gates",
+            b: "Elon Musk",
+            c: "Jeff Bezos",
+            d: "Warren Buffet"
+        },
+        correct: ["b"]
     },
     {
         question: "The iPhone was created by which company?",
-        a: "Apple",
-        b: "Intel",
-        c: "Amazon",
-        d: "Microsoft",
+        options: {
+            a: "Apple",
+            b: "Intel",
+            c: "Amazon",
+            d: "Microsoft"
+        },
         correct: ["a"]
     }
 ];
 
 const quiz = document.getElementById('quiz');
-const answerEls = document.querySelectorAll('.answer');
 const questionEl = document.getElementById('question');
-const a_text = document.getElementById('a_text');
-const b_text = document.getElementById('b_text');
-const c_text = document.getElementById('c_text');
-const d_text = document.getElementById('d_text');
 const submitBtn = document.getElementById('submit');
 
 let currentQuiz = 0;
@@ -48,20 +51,45 @@ let score = 0;
 loadQuiz();
 
 function loadQuiz() {
-    deselectAnswers();
-    resetAnswerStyles();
+    resetQuiz();
 
     const currentQuizData = quizData[currentQuiz];
+    const answerType = currentQuizData.correct.length > 1 ? 'checkbox' : 'radio';
 
     questionEl.innerText = currentQuizData.question;
-    a_text.innerText = currentQuizData.a;
-    b_text.innerText = currentQuizData.b;
-    c_text.innerText = currentQuizData.c;
-    d_text.innerText = currentQuizData.d;
+
+    const answersContainer = document.createElement('ul');
+
+    Object.keys(currentQuizData.options).forEach(key => {
+        const answerItem = document.createElement('li');
+        
+        const input = document.createElement('input');
+        input.type = answerType;
+        input.name = 'answer';
+        input.id = key;
+        input.classList.add('answer');
+        
+        const label = document.createElement('label');
+        label.htmlFor = key;
+        label.id = `${key}_text`;
+        label.innerText = currentQuizData.options[key];
+        
+        answerItem.appendChild(input);
+        answerItem.appendChild(label);
+        
+        answersContainer.appendChild(answerItem);
+    });
+
+    const quizHeader = document.querySelector('.quiz-header');
+    quizHeader.appendChild(answersContainer);
 }
 
-function deselectAnswers() {
-    answerEls.forEach(answerEl => answerEl.checked = false);
+function resetQuiz() {
+    const answersContainer = document.querySelector('.quiz-header ul');
+    if (answersContainer) {
+        answersContainer.remove();
+    }
+    resetAnswerStyles();
 }
 
 function resetAnswerStyles() {
@@ -72,7 +100,7 @@ function resetAnswerStyles() {
 
 function getSelected() {
     const selectedAnswers = [];
-    answerEls.forEach(answerEl => {
+    document.querySelectorAll('.answer').forEach(answerEl => {
         if (answerEl.checked) {
             selectedAnswers.push(answerEl.id);
         }
@@ -82,7 +110,7 @@ function getSelected() {
 
 function showAnswers() {
     const correctAnswers = quizData[currentQuiz].correct;
-    answerEls.forEach(answerEl => {
+    document.querySelectorAll('.answer').forEach(answerEl => {
         const label = document.getElementById(answerEl.id + '_text');
         if (correctAnswers.includes(answerEl.id)) {
             label.classList.add('correct');
